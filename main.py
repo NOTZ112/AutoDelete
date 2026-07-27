@@ -53,3 +53,56 @@ async def auto_delete_handler(client, message: Message):
         message_id=message.id,
         delete_time=int(time()) + delete_after
     )
+@User.on_message(filters.command("enable") & filters.group)
+async def enable_cmd(client, message: Message):
+    enable_group(message.chat.id)
+    await message.reply_text(
+        "✅ Auto Delete Enabled"
+    )
+
+
+@User.on_message(filters.command("disable") & filters.group)
+async def disable_cmd(client, message: Message):
+    disable_group(message.chat.id)
+    await message.reply_text(
+        "❌ Auto Delete Disabled"
+    )
+
+
+@User.on_message(filters.command("settime") & filters.group)
+async def settime_cmd(client, message: Message):
+    if len(message.command) != 2:
+        return await message.reply_text(
+            "Usage:\n/settime 60"
+        )
+
+    try:
+        sec = int(message.command[1])
+    except:
+        return await message.reply_text(
+            "Please enter only numbers."
+        )
+
+    set_group_time(
+        message.chat.id,
+        sec
+    )
+
+    await message.reply_text(
+        f"✅ Delete Time Updated\n\n{sec} Seconds"
+    )
+
+
+@User.on_message(filters.command("status") & filters.group)
+async def status_cmd(client, message: Message):
+    data = get_group(message.chat.id)
+
+    if not data:
+        return await message.reply_text(
+            "❌ Auto Delete Disabled"
+        )
+
+    status = "ON" if data.get("enabled") else "OFF"
+
+    await message.reply_text(
+        f"
