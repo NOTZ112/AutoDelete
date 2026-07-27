@@ -34,6 +34,10 @@ def get_all_data(time):
     all_data = list(col.find(data))
     return all_data
 
-def delete_all_data(all_data):
-    for data in all_data:
-        col.delete_one(data)
+def save_message(chat_id, message_id, delete_time):
+    data = {
+        "chat_id": chat_id,
+        "message_id": message_id,
+        "time": delete_time
+    }
+    col.insert_one(data)
