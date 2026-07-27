@@ -106,3 +106,28 @@ async def status_cmd(client, message: Message):
 
     await message.reply_text(
         f"
+@User.on_message(filters.command("start") & filters.private)
+async def start_cmd(client, message: Message):
+    await message.reply_text(
+        "**✅ Multi Group Auto Delete Bot Running!**\n\n"
+        "Commands:\n"
+        "/enable\n"
+        "/disable\n"
+        "/settime 60\n"
+        "/status"
+    )
+
+
+Popen(
+    f"gunicorn utils.server:app --bind 0.0.0.0:{PORT}",
+    shell=True
+)
+
+Popen(
+    "python3 -m utils.delete",
+    shell=True
+)
+
+print("✅ Multi Group Auto Delete Started")
+
+User.run()
