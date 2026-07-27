@@ -35,7 +35,11 @@ async def delete(user, message):
           if message.from_user.id not in BLACK_LIST:
              return
        _time = int(time()) + TIME 
-       save_message(message, _time)
+       save_message(
+    message.chat.id,
+    message.id,
+    _time
+)
     except Exception as e:
        print(str(e))
 
