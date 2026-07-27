@@ -102,19 +102,7 @@ async def settime_cmd(client, message: Message):
     )
 
 
-@User.on_message(filters.command("status") & filters.group)
-async def status_cmd(client, message: Message):
-    data = get_group(message.chat.id)
 
-    if not data:
-        return await message.reply_text(
-            "❌ Auto Delete Disabled"
-        )
-
-    status = "ON" if data.get("enabled") else "OFF"
-
-    await message.reply_text(
-        f"
 @User.on_message(filters.command("start") & filters.private)
 async def start_cmd(client, message: Message):
     await message.reply_text(
