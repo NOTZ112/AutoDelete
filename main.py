@@ -25,7 +25,7 @@ from pyrogram import Client, filters
 User = Client("auto-delete-user",
               session_string=SESSION)
 
-@User.on_message(filters.chat(CHATS))
+@User.on_message(filters.group)
 async def delete(user, message):
     try:
        if bool(WHITE_LIST):
