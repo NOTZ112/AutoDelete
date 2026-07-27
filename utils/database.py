@@ -41,3 +41,45 @@ def save_message(chat_id, message_id, delete_time):
         "time": delete_time
     }
     col.insert_one(data)
+groups = db["GROUPS"]
+
+
+def get_group(chat_id):
+    return groups.find_one({"chat_id": chat_id})
+
+
+def enable_group(chat_id, delete_time=10):
+    groups.update_one(
+        {"chat_id": chat_id},
+        {
+            "$set": {
+                "enabled": True,
+                "time": delete_time
+            }
+        },
+        upsert=True
+    )
+
+
+def disable_group(chat_id):
+    groups.update_one(
+        {"chat_id": chat_id},
+        {
+            "$set": {
+                "enabled": False
+            }
+        },
+        upsert=True
+    )
+
+
+def set_group_time(chat_id, delete_time):
+    groups.update_one(
+        {"chat_id": chat_id},
+        {
+            "$set": {
+                "time": delete_time
+            }
+        },
+        upsert=True
+    )
