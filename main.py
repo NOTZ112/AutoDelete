@@ -16,39 +16,40 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #=========================================================================
 
-from time import time 
+from time import time
+from subprocess import Popen
+
+from pyrogram import Client, filters
+from pyrogram.types import Message
+
 from utils.info import *
 from utils.database import *
-from subprocess import Popen
-from pyrogram import Client, filters
 
-User = Client("auto-delete-user",
-              session_string=SESSION)
+User = Client(
+    "auto-delete-user",
+    api_id=API_ID,
+    api_hash=API_HASH,
+    session_string=SESSION
+)
+
 
 @User.on_message(filters.group)
-async def delete(user, message):
-    try:
-       if bool(WHITE_LIST):
-          if message.from_user.id in WHITE_LIST:
-             return 
-       if bool(BLACK_LIST):
-          if message.from_user.id not in BLACK_LIST:
-             return
-       _time = int(time()) + TIME 
-       save_message(
-    message.chat.id,
-    message.id,
-    _time
-)
-    except Exception as e:
-       print(str(e))
+async def auto_delete_handler(client, message: Message):
+    settings = get_group(message.chat.id)
 
-@User.on_message(filters.regex("!start") & filters.private)
-async def start(user, message):
-    await message.reply("Hi, I'm alive!")
+    if not settings:
+        return
 
-#==========================================================
+    if not settings.get("enabled", False):
+        return
 
-Popen(f"gunicorn utils.server:app --bind 0.0.0.0:{PORT}", shell=True)
-Popen("python3 -m utils.delete", shell=True)
-User.run()
+    if message.service:
+        return
+
+    delete_after = settings.get("time", 10)
+
+    save_message(
+        chat_id=message.chat.id,
+        message_id=message.id,
+        delete_time=int(time()) + delete_after
+    )
