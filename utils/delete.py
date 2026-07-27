@@ -16,36 +16,49 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #=========================================================================
 
-import asyncio 
-from .info import * 
-from time import time 
-from .database import *
-from pyrogram import Client, idle 
-#-------------------------------------------------------------------------------
-bot = Client("auto-delete-bot",
-          api_id=API_ID,
-          api_hash=API_HASH,
-          bot_token=BOT_TOKEN)
-#-------------------------------------------------------------------------------
+import asyncio
+from time import time
 
-async def check_up(bot):   
-    _time = int(time()) 
-    all_data = get_all_data(_time)
-    for data in all_data:
-        try:
-           await bot.delete_messages(chat_id=data["chat_id"],
-                               message_ids=data["message_id"])           
-        except Exception as e:
-           err=data
-           err["Error"]=str(e)
-           print(err)
-    delete_all_data(all_data)
+from pyrogram import Client
 
-async def run_check_up():
-    async with bot:     
-        while True:  
-           await check_up(bot)
-           await asyncio.sleep(1)
-    
-if __name__=="__main__":   
-   asyncio.run(run_check_up())
+from .info import API_ID, API_HASH, BOT_TOKEN
+from .database import get_all_data, delete_all_data
+
+bot = Client(
+    "auto-delete-bot",
+    api_id=API_ID,
+    api_hash=API_HASH,
+    bot_token=BOT_TOKEN
+)
+
+
+async def check_messages():
+    while True:
+        current = int(time())
+
+        data = get_all_data(current)
+
+        for msg in data:
+            try:
+                await bot.delete_messages(
+                    chat_id=msg["chat_id"],
+                    message_ids=msg["message_id"]
+                )
+            except Exception as e:
+                print(e)
+
+        delete_all_data(data)
+
+        await asyncio.sleep(1)
+
+
+async def main():
+    await bot.start()
+
+    print("✅ Delete Service Started")
+
+    await check_messages()
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
