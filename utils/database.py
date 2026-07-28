@@ -61,15 +61,19 @@ def get_group(chat_id):
 
 
 def enable_group(chat_id):
-    groups.update_one(
-        {
-            "chat_id": chat_id
-        },
-        {
-            "$set": {
-                "enabled": True,
-                "time": 10
-            }
+    group = get_group(chat_id)
+
+    if group:
+        groups.update_one(
+            {"chat_id": chat_id},
+            {"$set": {"enabled": True}}
+        )
+    else:
+        groups.insert_one({
+            "chat_id": chat_id,
+            "enabled": True,
+            "time": 10
+        })
         },
         upsert=True
     )
