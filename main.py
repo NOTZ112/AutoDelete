@@ -33,7 +33,7 @@ User = Client(
 )
 
 
-@User.on_message(filters.group)
+@User.on_message(filters.group & ~filters.command(["enable", "disable", "status", "settime"]))
 async def auto_delete_handler(client, message: Message):
     settings = get_group(message.chat.id)
 
