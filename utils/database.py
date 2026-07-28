@@ -61,14 +61,7 @@ def get_group(chat_id):
 
 
 
-    else:
-        groups.insert_one({
-            "chat_id": chat_id,
-            "enabled": True,
-            "time": 10
-        })
-        },
-        upsert=True
+    
     )
 def enable_group(chat_id):
     group = get_group(chat_id)
