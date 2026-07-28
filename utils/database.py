@@ -1,21 +1,3 @@
-#=========================================================================
-# [AutoDelete - Telegram bot to delete messages after specific time]      
-# Copyright (C) 2022 Arunkumar Shibu                       
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
-#
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#=========================================================================
-
 from .info import DATABASE_URI
 from pymongo import MongoClient
 
@@ -60,9 +42,6 @@ def get_group(chat_id):
     })
 
 
-
-    
-    )
 def enable_group(chat_id):
     group = get_group(chat_id)
 
@@ -78,29 +57,18 @@ def enable_group(chat_id):
             "time": 10
         })
 
+
 def disable_group(chat_id):
     groups.update_one(
-        {
-            "chat_id": chat_id
-        },
-        {
-            "$set": {
-                "enabled": False
-            }
-        },
+        {"chat_id": chat_id},
+        {"$set": {"enabled": False}},
         upsert=True
     )
 
 
 def set_group_time(chat_id, seconds):
     groups.update_one(
-        {
-            "chat_id": chat_id
-        },
-        {
-            "$set": {
-                "time": seconds
-            }
-        },
+        {"chat_id": chat_id},
+        {"$set": {"time": seconds}},
         upsert=True
     )
